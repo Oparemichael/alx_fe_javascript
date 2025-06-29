@@ -233,6 +233,25 @@ async function fetchQuotesFromServer() {
   }
 }
 
+async function postQuotesToServer(quotesToSend) {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quotesToSend)
+    });
+
+    const result = await response.json();
+    console.log("Posted to server:", result);
+    notifyUpdate("✅ Quotes synced with server via POST.");
+  } catch (error) {
+    console.error("Failed to POST quotes:", error);
+    notifyUpdate("⚠️ Error syncing quotes to server.");
+  }
+}
+
 loadQuotes();
 createAddQuoteForm();
 populateCategories();
