@@ -36,6 +36,8 @@ function addQuote() {
   }
 }
 
+populateCategories(); // Updates dropdown with any new categories
+
 function createAddQuoteForm() {
   const formContainer = document.createElement("div");
 
@@ -123,6 +125,50 @@ function importFromJsonFile(event) {
   reader.readAsText(file);
 }
 
+function populateCategories() {
+  const categoryFilter = document.getElementById("categoryFilter");
+  const uniqueCategories = [...new Set(quotes.map(q => q.category))];
+
+  // Clear existing options except "All"
+  categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
+
+  uniqueCategories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.appendChild(option);
+  });
+
+  // Restore last selected filter
+  const lastFilter = localStorage.getItem("selectedCategory");
+  if (lastFilter) {
+    categoryFilter.value = lastFilter;
+    filterQuotes(); // apply filter on load
+  }
+}
+
+function filterQuotes() {
+  const selected = document.getElementById("categoryFilter").value;
+  localStorage.setItem("selectedCategory", selected);
+
+  const filtered = selected === "all"
+    ? quotes
+    : quotes.filter(q => q.category === selected);
+
+  if (filtered.length === 0) {
+    quoteDisplay.innerHTML = `<p><em>No quotes in this category.</em></p>`;
+    return;
+  }
+
+  const randomIndex = Math.floor(Math.random() * filtered.length);
+  const quote = filtered[randomIndex];
+  quoteDisplay.innerHTML = `<p>"${quote.text}"</p><em>- ${quote.category}</em>`;
+  sessionStorage.setItem("lastViewedQuote", JSON.stringify(quote));
+}
+
+
+
 loadQuotes();
 createAddQuoteForm();
+populateCategories();
 loadLastViewedQuote(); // Optional but neat
