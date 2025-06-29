@@ -97,3 +97,7 @@ function exportToJsonFile() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+loadQuotes();
+createAddQuoteForm();
+loadLastViewedQuote(); // Optional but neat
