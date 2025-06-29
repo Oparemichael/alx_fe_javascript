@@ -214,6 +214,24 @@ async function fetchQuotesFromServer() {
   return await SERVER_API.fetchQuotes();
 }
 
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const data = await response.json();
+
+    // Convert API response to quote objects
+    const quotesFromServer = data.slice(0, 5).map(post => ({
+      text: post.title,
+      category: "Server" // You can customize this or use post.userId for variety
+    }));
+
+    return quotesFromServer;
+  } catch (error) {
+    console.error("Failed to fetch from server:", error);
+    notifyUpdate("⚠️ Could not fetch quotes from server.");
+    return [];
+  }
+}
 
 loadQuotes();
 createAddQuoteForm();
