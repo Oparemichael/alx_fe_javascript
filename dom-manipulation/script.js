@@ -20,15 +20,17 @@ function showRandomQuote() {
 newQuoteBtn.addEventListener("click", showRandomQuote);
 
 // Function to add a new quote
+
 function addQuote() {
   const quoteText = document.getElementById("newQuoteText").value.trim();
   const quoteCategory = document.getElementById("newQuoteCategory").value.trim();
 
   if (quoteText && quoteCategory) {
     quotes.push({ text: quoteText, category: quoteCategory });
+    saveQuotes(); // Save to localStorage
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
-    showRandomQuote(); // Optionally show the new quote immediately
+    showRandomQuote();
   } else {
     alert("Please fill in both fields.");
   }
@@ -56,4 +58,15 @@ function createAddQuoteForm() {
   formContainer.appendChild(addButton);
 
   document.body.appendChild(formContainer);
+}
+
+function loadQuotes() {
+  const storedQuotes = localStorage.getItem("quotes");
+  if (storedQuotes) {
+    quotes = JSON.parse(storedQuotes);
+  }
+}
+
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
 }
