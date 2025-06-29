@@ -98,6 +98,31 @@ function exportToJsonFile() {
   URL.revokeObjectURL(url);
 }
 
+function importFromJsonFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+      if (Array.isArray(importedQuotes)) {
+        importedQuotes.forEach(q => {
+          if (q.text && q.category) quotes.push(q);
+        });
+        saveQuotes();
+        showRandomQuote();
+        alert("Quotes imported successfully!");
+      } else {
+        alert("Invalid file format.");
+      }
+    } catch (err) {
+      alert("Error reading file: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
 loadQuotes();
 createAddQuoteForm();
 loadLastViewedQuote(); // Optional but neat
