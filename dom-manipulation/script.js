@@ -267,7 +267,7 @@ async function syncQuotes() {
     // Step 4: Refresh UI
     populateCategories();
     filterQuotes();
-    notifyUpdate("🔁 Quotes synced with server.");
+    notifyUpdate("Quotes synced with server!");
   } catch (error) {
     console.error("Sync failed:", error);
     notifyUpdate("⚠️ Sync error: " + error.message);
