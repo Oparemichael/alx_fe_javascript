@@ -166,6 +166,50 @@ function filterQuotes() {
   sessionStorage.setItem("lastViewedQuote", JSON.stringify(quote));
 }
 
+const SERVER_API = {
+  fetchQuotes: () =>
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve([
+          { text: "Server wisdom takes priority.", category: "Server" },
+          { text: "Data sync is the new gravity.", category: "Tech" }
+        ]);
+      }, 1000);
+    }),
+  postQuotes: updatedQuotes =>
+    new Promise(resolve => {
+      setTimeout(() => resolve({ success: true }), 1000);
+    })
+};
+
+function startPeriodicSync(interval = 60000) {
+  setInterval(async () => {
+    const serverQuotes = await SERVER_API.fetchQuotes();
+    const merged = mergeQuotes(serverQuotes, quotes);
+    quotes = merged;
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+    notifyUpdate("Synced with server – conflicts resolved in favor of server.");
+  }, interval);
+}
+
+function mergeQuotes(serverQuotes, localQuotes) {
+  const localMap = new Map(localQuotes.map(q => [q.text + q.category, q]));
+  serverQuotes.forEach(q => {
+    localMap.set(q.text + q.category, q); // Overwrites local in case of conflict
+  });
+  return [...localMap.values()];
+}
+
+function notifyUpdate(message) {
+  const note = document.createElement("div");
+  note.textContent = message;
+  note.style.cssText = "background: #f0f0f0; padding: 10px; margin: 10px 0;";
+  document.body.insertBefore(note, document.body.firstChild);
+  setTimeout(() => note.remove(), 5000);
+}
+
 
 
 loadQuotes();
