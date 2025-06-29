@@ -252,6 +252,28 @@ async function postQuotesToServer(quotesToSend) {
   }
 }
 
+async function syncQuotes() {
+  try {
+    // Step 1: Fetch from server
+    const serverQuotes = await fetchQuotesFromServer();
+
+    // Step 2: Merge with local quotes (server takes precedence)
+    quotes = mergeQuotes(serverQuotes, quotes);
+    saveQuotes();
+
+    // Step 3: Optionally send all updated quotes back to server
+    await postQuotesToServer(quotes);
+
+    // Step 4: Refresh UI
+    populateCategories();
+    filterQuotes();
+    notifyUpdate("🔁 Quotes synced with server.");
+  } catch (error) {
+    console.error("Sync failed:", error);
+    notifyUpdate("⚠️ Sync error: " + error.message);
+  }
+}
+
 loadQuotes();
 createAddQuoteForm();
 populateCategories();
