@@ -210,6 +210,9 @@ function notifyUpdate(message) {
   setTimeout(() => note.remove(), 5000);
 }
 
+async function fetchQuotesFromServer() {
+  return await SERVER_API.fetchQuotes();
+}
 
 
 loadQuotes();
